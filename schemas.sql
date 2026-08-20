@@ -1,13 +1,13 @@
 -- Amazon Project - Advance SQL 
 
--- category TABLE
+-- category TABLE(T1)
 CREATE TABLE category 
 (
 category_id INT PRIMARY KEY,
 category_name  VARCHAR(25)
 );
 
--- customers TABLE
+-- customers TABLE(T2)
 CREATE TABLE customers
 (
 Customer_id INT PRIMARY KEY,	
@@ -17,7 +17,7 @@ state VARCHAR(20),
 address VARCHAR(5) DEFAULT ('xxxx')
 );
 
--- sellers TABLE
+-- sellers TABLE(T3)
 CREATE TABLE sellers
 (
 seller_id INT PRIMARY KEY,
@@ -25,7 +25,7 @@ seller_name VARCHAR(25),
 origin VARCHAR (10)
 );
 
--- products TABLE
+-- products TABLE(T4)
 CREATE TABLE products
 (
 product_id INT PRIMARY KEY,
@@ -36,7 +36,7 @@ category_id INT, -- FK
 CONSTRAINT products_fk_category FOREIGN KEY(category_id) REFERENCES category(category_id)
 );
 
--- orders TABLE
+-- orders TABLE(T5)
 CREATE TABLE orders
 (
 order_id INT PRIMARY KEY,
@@ -48,7 +48,7 @@ CONSTRAINT orders_fk_customers FOREIGN KEY(customer_id) REFERENCES customers(cus
 CONSTRAINT orders_fk_sellers FOREIGN KEY(seller_id) REFERENCES sellers(seller_id)
 );
 
--- order_items TABLE
+-- order_items TABLE(T6)
 CREATE TABLE order_items
 (
 order_item_id INT PRIMARY KEY,
@@ -60,7 +60,7 @@ CONSTRAINT order_items_fk_orders FOREIGN KEY(order_id) REFERENCES orders(order_i
 CONSTRAINT order_items_fk_products FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
 
--- payments TABLE
+-- payments TABLE(T7)
 CREATE TABLE payments 
 (
 payment_id INT PRIMARY KEY,
@@ -70,7 +70,7 @@ payment_status VARCHAR(20),
 CONSTRAINT payments_fk_orders FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
 
--- shippings TABLE
+-- shippings TABLE(T8)
 CREATE TABLE shippings
 (
 shipping_id INT PRIMARY KEY,
@@ -82,7 +82,7 @@ delivery_status VARCHAR(15),
 CONSTRAINT shippings_fk_orders FOREIGN KEY(order_id) REFERENCES orders(order_id)
 );
 
--- inventory TABLE
+-- inventory TABLE(T9)
 CREATE TABLE inventory
 (
 inventory_id INT PRIMARY KEY,
@@ -93,6 +93,10 @@ last_stock_date DATE,
 CONSTRAINT inventory_fk_products FOREIGN KEY(product_id) REFERENCES products(product_id)
 
 )
+
+-- End of schemas
+
+
 
 
 
