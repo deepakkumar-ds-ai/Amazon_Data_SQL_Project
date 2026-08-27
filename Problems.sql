@@ -92,6 +92,37 @@ ORDER BY 3 DESC;
 
 
 
+/*
+3. Average Order Value (AOV)
+Compute the average order value for each customer.
+Challenge: Include only customers with more than 5 orders.
+*/
+
+-- o -- oi - cx
+--group by cx id and cx NAME sum(total_sale)/no orders
+
+-- cx rahul 2
+-- 1000/2
+-- oi/5
+SELECT
+	c.customer_id,
+	CONCAT(c.first_name, ' ', c.last_name) as full_name,
+	SUM(total_sale)/COUNT(o.order_id) as AOV, --filter
+	COUNT(o.order_id) as total_orders
+FROM orders as o
+JOIN
+customers as c
+ON c.customer_id = o.customer_id
+JOIN
+order_items as oi
+ON oi.order_id = o.order_id
+GROUP BY 1, 2
+HAVING COUNT(o.order_id)>5;
+
+
+
+
+
 
 
 
