@@ -178,10 +178,38 @@ WHERE o.customer_id IS NULL;
 
 
 /*
-6. Best-Selling Category by State
-Indentify the best-selling product	category for each state.
+6. Least-Selling Category by State
+Indentify the least-selling product	category for each state.
 Challenge: Include the total sales for that category withing each state.
 */
+
+WITH ranking_table
+AS
+(
+SELECT 
+	c.state,
+	cat.category_name,
+	ROUND(SUM(oi.total_sale:: numeric),2) as total_sale,
+	RANK() OVER(PARTITION BY c.state ORDER BY SUM(oi.total_sale) ASC) as rank
+FROM orders as o
+JOIN 
+customers as c
+ON o.customer_id = c.customer_id
+JOIN
+order_items as oi
+ON o.order_id = oi.order_id
+JOIN 
+products as p
+ON oi.product_id =  p.product_id
+JOIN
+category as cat
+ON cat.category_id = p.category_id
+GROUP BY 1, 2
+)
+SELECT *
+FROM ranking_table
+WHERE rank = 1
+
 
 
 
