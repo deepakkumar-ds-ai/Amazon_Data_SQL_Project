@@ -153,6 +153,36 @@ ORDER BY year, month
 ) as t1
 
 
+/*
+5. Cusomers with No Purchases
+Finder customers who have registered but never placed an order.
+Challange: List customer details and the time since their registration.
+*/
+
+-- Approach - 1
+SELECT *
+FROM customers
+WHERE customer_id NOT IN (SELECT
+					DISTINCT customer_id
+					FROM orders
+					);
+
+-- Approach - 2
+SELECT *
+FROM customers as c
+LEFT JOIN
+orders as o
+ON o.customer_id = c.customer_id
+WHERE o.customer_id IS NULL;
+
+
+
+/*
+6. Best-Selling Category by State
+Indentify the best-selling product	category for each state.
+Challenge: Include the total sales for that category withing each state.
+*/
+
 
 
 
