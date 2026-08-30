@@ -250,6 +250,26 @@ products as p
 ON p.product_id = i.product_id
 WHERE stock < 10;
 
+/*
+9. Shipping Delays
+Identify orders where the shipping	date is later 3 days after the order date.
+Challenge: Include customer, order details, and delivery provider.	
+*/
+
+-- cx -- o -- ship
+
+SELECT 
+	c.*,
+	o.*,
+	s.shipping_providers,
+	s.shipping_date - o.order_date as days_took_to_ship
+FROM orders as o
+JOIN
+customers as c
+ON c.customer_id = o.customer_id
+JOIN shippings as s
+ON o.order_id = s.order_id
+WHERE s.shipping_date - o.order_date > 3;
 
 
 
