@@ -208,7 +208,7 @@ GROUP BY 1, 2
 )
 SELECT *
 FROM ranking_table
-WHERE rank = 1
+WHERE rank = 1;
 
 
 /*
@@ -229,13 +229,26 @@ ON c.customer_id = o.customer_id
 JOIN
 order_items as oi
 ON oi.order_id = o.order_id
-GROUP BY 1, 2
+GROUP BY 1, 2;
 
 
+/*
+8. Inventory stock Alerts
+Query product with stock levels below a certain threshold (e.g., less than 10 units).
+Challenge: Include last restock date and warehouse information.
+*/
 
-
-
-
+SELECT
+	i.inventory_id,
+	p.product_name,
+	i.stock as current_stock_left,
+	i.last_stock_date,
+	warehouse_id
+FROM inventory as i
+JOIN
+products as p 
+ON p.product_id = i.product_id
+WHERE stock < 10;
 
 
 
