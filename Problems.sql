@@ -272,6 +272,21 @@ ON o.order_id = s.order_id
 WHERE s.shipping_date - o.order_date > 3;
 
 
+/*
+10. Payment Success	Rate
+Calculate the percentage of successful payments across all orders.
+Challenge: Include breakdowns by payment status (e.g. failed, pending).
+*/
+SELECT
+	p.payment_status,
+	COUNT(*) as total_cnt,
+	ROUND(COUNT(*)::numeric/(SELECT COUNT(*) FROM payments)::numeric * 100, 2)
+FROM orders as o
+JOIN
+payments as p
+ON o.order_id = p.order_id
+GROUP BY 1;
+
 
 
 
