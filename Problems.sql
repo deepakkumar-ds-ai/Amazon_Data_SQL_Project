@@ -288,6 +288,76 @@ ON o.order_id = p.order_id
 GROUP BY 1;
 
 
+/*
+11. Top Performing Sellers
+Find the top 5 sellers based on total sales values.
+Challenge: Include both successful and failed orders. and display their percentage of successful orders.
+*/
+
+WITH top_sellers
+AS
+(SELECT 
+	s.seller_id,
+	s.seller_name,
+	SUM(oi.total_sale) as total_sale
+FROM orders as o 
+JOIN
+sellers as s
+ON o.seller_id = s.seller_id
+JOIN 
+order_items as oi
+ON oi.order_id = o.order_id
+GROUP BY 1, 2
+ORDER BY 3 DESC
+LIMIT 5
+),
+sellers_reports
+AS
+(SELECT
+	o.seller_id,
+	ts.seller_name,
+	o.order_status,
+	COUNT(*) as total_orders
+FROM orders as o
+JOIN
+top_sellers as ts
+ON ts.seller_id = o.seller_id
+WHERE
+	o.order_status NOT IN ('Inprogess', 'Returned')
+GROUP BY 1, 2, 3
+)
+SELECT
+	seller_id,
+	seller_name,
+	SUM(CASE WHEN order_status = 'Completed' THEN total_orders ELSE 0 END) as Completed_orders,
+	SUM(CASE WHEN order_status = 'Cancelled' THEN total_orders ELSE 0 END) as Cancelled_orders,
+	SUM(total_orders) as total_orders,	
+	ROUND(SUM(CASE WHEN order_status = 'Completed' THEN total_orders ELSE 0 END)::numeric
+		/ SUM(total_orders)::numeric*100,2) as successful_orders_percentage
+FROM sellers_reports
+GROUP BY 1, 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
