@@ -335,7 +335,48 @@ SELECT
 	ROUND(SUM(CASE WHEN order_status = 'Completed' THEN total_orders ELSE 0 END)::numeric
 		/ SUM(total_orders)::numeric*100,2) as successful_orders_percentage
 FROM sellers_reports
+GROUP BY 1, 2;
+
+/*
+12. Product Profit Margin 
+Calculate the profit margin for each product (difference between price and cost of goods sold).
+Challenge: Rank products by their profit margin, showing highest to lowest.
+*/
+-- o - oi -- prod
+-- group pid sum(total_sale - cogs * qty) as profit
+
+SELECT
+	p.product_id,
+	p.product_name,
+	SUM(total_sale - (p.cogs * oi.quantity)) as profit,
+	SUM(total_sale - (p.cogs * oi.quantity))/SUM(total_sale)*100 as profit_margin,
+	DENSE_RANK() OVER(ORDER BY SUM(total_sale - (p.cogs * oi.quantity))/SUM(total_sale)*100 DESC) as product_rank
+FROM order_items as oi
+JOIN
+products as p
+ON p.product_id = oi.product_id
 GROUP BY 1, 2
+
+--------- METHOD - 2
+-- SELECT
+-- 	product_id,
+-- 	product_name,
+-- 	profit_margin,
+-- 	DENSE_RANK() OVER(ORDER BY profit_margin DESC) as product_ranking
+-- FROM
+-- (SELECT
+-- 	p.product_id,
+-- 	p.product_name,
+-- 	-- SUM(total_sale - (p.cogs * oi.quantity)) as profit,
+-- 	SUM(total_sale - (p.cogs * oi.quantity))/SUM(total_sale)*100 as profit_margin
+-- 	-- DENSE_RANK() OVER(ORDER BY SUM(total_sale - (p.cogs * oi.quantity))/SUM(total_sale)*100 DESC) as product_rank
+-- FROM order_items as oi
+-- JOIN
+-- products as p
+-- ON p.product_id = oi.product_id
+-- GROUP BY 1, 2)
+
+
 
 
 
