@@ -400,6 +400,31 @@ ORDER BY 4 DESC
 LIMIT 10;
 
 
+/*
+14. Inactive Sellers
+Identify sellers who haven't made any sales in the last 6 six months.
+Challenge: Show the last sale date and total sales from those sellers.
+*/
+
+WITH ctel -- as these sellers has not done any sale in last 6 month
+AS
+(SELECT * FROM sellers
+WHERE seller_id NOT IN (SELECT seller_id FROM orders WHERE order_date >= CURRENT_DATE - INTERVAL '6 month')
+)
+
+SELECT
+o.seller_id,
+MAX(o.order_date) as last_sale_date,
+MAX(oi.total_sale) as last_sale_amount
+FROM orders as o
+JOIN
+ctel
+ON ctel.seller_id = o.seller_id
+JOIN order_items as oi
+ON o.order_id = oi.order_id
+GROUP BY 1;
+
+
 
 
 
