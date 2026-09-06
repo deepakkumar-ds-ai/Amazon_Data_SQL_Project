@@ -425,7 +425,7 @@ ON o.order_id = oi.order_id
 GROUP BY 1;
 
 /* 
-16. IDENTIFY customers into returning or new
+14. IDENTIFY customers into returning or new
 if the customer has done more than 5 return categorize them	as returning otherwise new
 Challenge: List customers id, name, total orders, total returns
 */
@@ -452,6 +452,31 @@ order_items as oi
 ON oi.order_id = o.order_id
 GROUP BY 1
 );
+
+/*
+17.Top 5 Customers by Orders in Each state
+Identify the top 5 customers with the highest number of orders for each state.
+Challenge: Include the number of orders and total sales for each customer.
+*/
+SELECT
+	*
+FROM
+(SELECT 
+	c.state,
+	CONCAT(c.first_name, ' ', c.last_name) as customers,
+	COUNT(o.order_id) as total_orders,
+	SUM(total_sale) as total_sale,
+	DENSE_RANK() OVER(PARTITION BY c.state ORDER BY COUNT(o.order_id) DESC) as rank
+FROM orders as o
+JOIN
+order_items as oi
+ON oi.order_id = o.order_id
+JOIN
+customers as c
+ON c.customer_id = o.customer_id
+GROUP BY 1, 2
+) as t1
+WHERE rank<=5
 
 
 
