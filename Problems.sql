@@ -425,7 +425,7 @@ ON o.order_id = oi.order_id
 GROUP BY 1;
 
 /* 
-14. IDENTIFY customers into returning or new
+15. IDENTIFY customers into returning or new
 if the customer has done more than 5 return categorize them	as returning otherwise new
 Challenge: List customers id, name, total orders, total returns
 */
@@ -477,6 +477,30 @@ ON c.customer_id = o.customer_id
 GROUP BY 1, 2
 ) as t1
 WHERE rank<=5
+
+/*
+18. Revenue by Shipping Provider
+Calculate the total revenue handled by each shipping providers.
+Challenge: Include the total number of orders handled and the average delivery time for each provider.
+*/
+
+-- oi - o - shippings
+-- group by shipping provider id sum(total sale), total orders
+
+SELECT
+	s.shipping_providers,
+	COUNT(o.order_id) as order_handled,
+	SUM(oi.total_sale) as total_sale,
+	COALESCE(AVG(s.return_date - s.shipping_date), 0) as average_days
+FROM orders as o
+JOIN
+order_items as oi
+ON o.order_id = oi.order_id
+JOIN shippings as s
+ON s.order_id = o.order_id
+GROUP BY 1
+
+
 
 
 
