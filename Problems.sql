@@ -573,6 +573,91 @@ create a function as soon as product is sold the same quantity should reduced fr
 after adding any sales records it should update the stock in the inventory table based on the product and quantiy purchased
 */
 
+SELECT * FROM products
+-- product_id 1 -- airpod 3rd gen -- 55 stocks
+-- product_id 2 airpod max -- 39 stocks
+
+CREATE OR REPLACE PROCEDURE add_sales
+(
+p_order_id INT,
+p_customer_id INT,
+p_seller_id INT,
+p_order_item_id INT,
+p_product_id INT,
+p_quantity INT
+)
+LANGUAGE plpgsql
+AS $$
+
+DECLARE
+-- all variable
+v_count INT;
+v_price FLOAT;
+v_product VARCHAR(50);
+
+
+BEGIN
+-- Fetching product name and price based on product_id entered
+	SELECT	
+		price,
+		product_name
+		INTO
+		v_price, v_product
+	FROM products
+	WHERE product_id = p_product_id;
+
+-- checking stock and product availability in inventory
+
+	SELECT
+		COUNT(*)
+		INTO
+		v_count
+	FROM inventory
+	WHERE
+		product_id = p_product_id
+		AND
+		stock >= p_quantity;
+	IF v_count > 0 THEN
+	-- add into orders and order_items table
+	-- update invetory
+		INSERT INTO orders(order_id, order_date, customer_id, seller_id)
+		VALUES
+		(p_order_id, CURRENT_DATE, p_customer_id, p_seller_id);
+		-- adding into order list
+		INSERT INTO order_items(order_item_id, order_id, product_id, quantity, price_per_unit, total_sale)
+		VALUES
+		(p_order_item_id, p_order_id, p_product_id, p_quantity, v_price, v_price*p_quantity);
+
+		-- updating inventory
+		UPDATE inventory
+		SET stock = stock - p_quantity
+		WHERE product_id = p_product_id;
+
+		RAISE NOTICE 'Thank you product: % sale has been added also inventory stock updates', v_product;
+
+	ELSE 
+		RAISE NOTICE 'Thank you! for your info the product: % is not available.', v_product;
+		
+	END IF;
+	
+END;
+$$
+
+call add_sales
+(
+250002, 2, 5, 25001, 1, 14
+);
+
+
+-- (
+-- p_order_id INT,
+-- p_customer_id INT,
+-- p_seller_id INT,
+-- p_order_item_id INT,
+-- p_product_id INT,
+-- p_quantity INT
+-- )
+
 
 
 
